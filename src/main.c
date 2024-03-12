@@ -29,16 +29,20 @@
 #include <stdlib.h>
 
 // -- Variables ----------------------------------------------------------------
+// беззнаковая целочисленная переменная 32-битного типа со значением по умолчанию 57600
 uint32_t mb_baudrate = 57600; 	// default value
+// начальный адрес
 uint8_t  mb_address = 0x01;		// default	value
 
+// обозначение счётчиков
 uint32_t systick_counter, flash_load_counter1, flash_load_counter2;
+// таймер
 uint32_t calculation_time = 0;
 
-// system control states
-uint16_t system_status = 0;
-uint16_t command_status = 0;
-eMBErrorCode mb_status;
+// system control states | состояния управления системой
+uint16_t system_status = 0;		// состояние системы
+uint16_t command_status = 0;	// состояние команды
+eMBErrorCode mb_status;			// состояние
 
 
 // -- Extern variables ---------------------------------------------------------
