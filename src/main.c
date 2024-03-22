@@ -1,57 +1,69 @@
 #include "plib035.h"
-#include "..\modbus\mb.h"
-#include "..\modbus\mbport.h"
-#include "fw_updater.h"
-#include "ComDef.h"
-#include "Processor.h"
-#include <string.h>
-#include <stdlib.h>
-
- //-- Variables ----------------------------------------------------------------
- //беззнаковая целочисленная переменная 32-битного типа со значением по умолчанию 57600
-uint32_t mb_baudrate = 57600; 	// default value
- //начальный адрес
-uint8_t  mb_address = 0x01;		// default	value
-
- //обозначение счётчиков
-uint32_t systick_counter, flash_load_counter1, flash_load_counter2;
- //таймер
-
- //system control states | состояния управления системой
-uint16_t system_status = 0;		// состояние системы
-uint16_t command_status = 0;	// состояние команды
-
 
 int main(void)
 {	
+	int i = 0;
+	int	j = 0;
+	int	x = 0; 
+	
 	// Настройка таймера
 	RCU->PCLKCFG_bit.TMR0EN = 1;
 	RCU->PRSTCFG_bit.TMR0EN = 1;
-	TMR0->LOAD = 9999;
+	
+	TMR0->LOAD 	= 100000;
 	TMR0->ADCSOC_bit.EN = 1;
 	TMR0->CTRL_bit.ON = 1;
 	
-	RCU->HCLKCFG_bit.GPIOAEN = 1;	// разрешение тактирования порта А
-	RCU->HRSTCFG_bit.GPIOAEN = 1; // включение тактирования порта А
+	// Разрешение тактирования порта А
+  RCU->HCLKCFG_bit.GPIOAEN = 1;
+  RCU->HRSTCFG_bit.GPIOAEN = 1;
 	
-	GPIOA->DENSET_bit.PIN10 = 1; // включение цифровой функции 10-го пина порта А
-  GPIOA->OUTENSET_bit.PIN10 = 1; // включение вывода 10-го пина порта А
-	
-	int i; 
+	// Настройка пина 8
+	GPIOA->DENSET 			|= (1 << 8);
+	GPIOA->OUTENSET 		|= (1	<< 8);
+	// Настройка пина 9
+	GPIOA->DENSET 			|= (1 << 9);
+	GPIOA->OUTENSET 		|= (1 << 9);
+	// Настройка пина 10 
+	GPIOA->DENSET 			|= (1 << 10);
+	GPIOA->OUTENSET 		|= (1 << 10); 
+	// Настройка пина 11
+	GPIOA->DENSET 			|= (1 << 11);
+	GPIOA->OUTENSET 		|= (1 << 11);
+	// Настройка пина 12
+	GPIOA->DENSET 			|= (1 << 12);
+	GPIOA->OUTENSET 		|= (1 << 12);
+	// Настройка пина 13
+	GPIOA->DENSET 			|= (1 << 13);
+	GPIOA->OUTENSET 		|= (1 << 13);
+	// Настройка пина 14
+	GPIOA->DENSET 			|= (1 << 14);
+	GPIOA->OUTENSET 		|= (1 << 14);
+	// Настройка пина 15
+	GPIOA->DENSET 			|= (1 << 15);
+	GPIOA->OUTENSET 		|= (1 << 15);
 
-	// Бесконечный цикл
-	while (1)
-	{
-		i++; 
-		if (i == 6000) 
+  while (1)
+  {
+		i++;
+		j++;
+		x++; 
+		
+		if (i == 2000000)
 		{
-			GPIOA->DENSET_bit.PIN11 = 1;
-			GPIOA->OUTENSET_bit.PIN11 = 1;
+			GPIOA->DATAOUTTGL |= (1 << 10);
+			i = 0;
 		}
-		else {
-			GPIOA->DENSET_bit.PIN11 = 0;
-			GPIOA->OUTENSET_bit.PIN11 = 0;
+		if (j == 1500000)
+		{
+			GPIOA->DATAOUTTGL |= (1 << 11);
+			j = 0;
 		}
+		if (x == 1000000)
+		{
+			GPIOA->DATAOUTTGL |= (1 << 12);
+			x = 0;
+		}	
 	}
 }
 
@@ -60,7 +72,7 @@ int main(void)
 // *------------------------------------------------------------------------------
 // * НИИЭТ, Богдан Колбов <kolbov@niiet.ru>
 // *==============================================================================
-// * ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБО
+// * ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ «КАК ЕСТЬ», БЕЗ КАКИХ-ЛИБОs
 // * ГАРАНТИЙ, ЯВНО ВЫРАЖЕННЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ ГАРАНТИИ ТОВАРНОЙ
 // * ПРИГОДНОСТИ, СООТВЕТСТВИЯ ПО ЕГО КОНКРЕТНОМУ НАЗНАЧЕНИЮ И ОТСУТСТВИЯ
 // * НАРУШЕНИЙ, НО НЕ ОГРАНИЧИВАЯСЬ ИМИ. ДАННОЕ ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ
