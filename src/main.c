@@ -16,7 +16,7 @@ int main(void)
 	
 	/* Настройка системного таймера */
 	SysTick->VAL = 0; 														// Установка значения
-	SysTick->LOAD = 50001001 - 1; 								// Исходное значение
+	SysTick->LOAD = 60001001 - 1; 								// Исходное значение
 	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk;	// Откуда брать тики (в данном случае выставляется 1, т. е. с частоты процесосра)
 	SysTick->CTRL |= SysTick_CTRL_TICKINT_Msk;		// Разрешение прерывания системного таймера
 
@@ -38,54 +38,34 @@ int main(void)
 	gpioa_init(GPIO_Pin_8);		// Инициализация пина 8
 	gpioa_init(GPIO_Pin_9);		// Инициализация пина 9
 	gpioa_init(GPIO_Pin_10);	// Инициализация пина 10
+	gpioa_init(GPIO_Pin_11);	// Инициализация пина 11
+	gpioa_init(GPIO_Pin_12);	// Инициализация пина 12
+	gpioa_init(GPIO_Pin_13);	// Инициализация пина 13
+	gpioa_init(GPIO_Pin_14);	// Инициализация пина 14
+	gpioa_init(GPIO_Pin_15);  // Инициализация пина 15
 	
+	unsigned long pins[8] = {GPIO_Pin_8, GPIO_Pin_9, GPIO_Pin_10, GPIO_Pin_11, 
+													 GPIO_Pin_12, GPIO_Pin_13, GPIO_Pin_14, GPIO_Pin_15};
+	int length = sizeof(pins) / sizeof(pins[0]); // Определение длины массива
+														
   while (1)
   {	
-		// Если x равен Time_Block
-		if (x == Time_Block) 
+		if (GPIOA->OUTENSET & (1 << 8)) 
 		{
-			// Инверсируем все биты 8-го пина
-			GPIO_ToggleBits(GPIOA, GPIO_Pin_8);	// GPIOA->DATAOUTTGL |= (1 << 8);
-		
-			// Обнуляем x
-			x = 0;
+			for (int i = 0; i < length; i++) 
+			{
+				for (int j = 0; j < 140000; j++)
+				GPIO_OutCmd(GPIOA, pins[i], DISABLE);
+			}
 		}
-	
-		// Итерируем x
-		x++;
-		
-		// Если значение таймера достигает 0
-		if (SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk)
-			GPIO_ToggleBits(GPIOA, GPIO_Pin_9);	// GPIOA->DATAOUTTGL |= (1 << 9);
-	
-		// Если флаг прерывания равен 1
-    if (sys_tick_flag)
-    {
-			// Инверсируем все биты 9-го пина
-      GPIO_ToggleBits(GPIOA, GPIO_Pin_10);	// GPIOA->DATAOUTTGL |= (1 << 9);				
-			// Обнуляем флаг
-			sys_tick_flag = 0;
-    }		
-		
-		// Если кнопка была нажата
-		if (GPIOA->DATA & (1 << 7)) 
+		else
 		{
-			// Если статус нажатия равен 1
-			if (status_button_click)
+			for (int i = 0; i < length; i++) 
 			{
-				// Инверсируем все биты 12-го пина
-				GPIO_ToggleBits(GPIOA, GPIO_Pin_12);	
-				// Обнуляем статус нажатия
-				status_button_click = 0; 
-			}
-			else 
-			{
-				// Устанавливаем пин на выход
-				GPIO_OutCmd(GPIOA, GPIO_Pin_12, ENABLE);
-				// Ставим статус нажатия 
-				status_button_click = 1;
-			}
-		}	
+				for (int j = 0; j < 140000; j++)
+				GPIO_OutCmd(GPIOA, pins[i], ENABLE);
+			}		
+		}
   }     
 }
 
@@ -99,6 +79,6 @@ void SysTick_Handler()
 /* Инициализация пинов */
 void gpioa_init(unsigned long number_pin) 
 {
-	GPIO_OutCmd(GPIOA, number_pin, ENABLE);				// Настройка пина на выход
+	//GPIO_OutCmd(GPIOA, number_pin, ENABLE);				// Настройка пина на выход
   GPIO_DigitalCmd(GPIOA, number_pin, ENABLE);		// Включение цифровой функции
 }
