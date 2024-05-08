@@ -6,6 +6,7 @@ uint32_t Time_Block = 450000;			// Точка инверсирование пи�
 uint32_t x = 0;										// Итерируемая переменная
 uint32_t status_button_click = 0;	// Инициализация флага состояния кнопки
 
+void Delay(uint32_t param);									// Инициализация функции задержки
 void gpioa_init(unsigned long number_pin);	// Функция для инициализации пинов
 
 int main(void)
@@ -54,7 +55,7 @@ int main(void)
 		{
 			for (int i = 0; i < length; i++) 
 			{
-				for (int j = 0; j < 140000; j++)
+				Delay(200000);
 				GPIO_OutCmd(GPIOA, pins[i], DISABLE);
 			}
 		}
@@ -62,11 +63,20 @@ int main(void)
 		{
 			for (int i = 0; i < length; i++) 
 			{
-				for (int j = 0; j < 140000; j++)
+				Delay(200000);
 				GPIO_OutCmd(GPIOA, pins[i], ENABLE);
 			}		
 		}
   }     
+}
+
+/* Функция задержки */
+void Delay(uint32_t param) {
+    volatile uint32_t counter;
+    counter = param;
+	
+    while(counter) 
+      counter--; 
 }
 
 /* Обработчик прерывания системного таймера */
